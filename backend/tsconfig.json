@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es2016",                                /* Defina a versão do JavaScript de saída. */
+    
+    /* Modules */
+    "module": "commonjs",                              /* Defina o sistema de módulos para CommonJS. */
+    "rootDir": "./src",                                /* Defina a pasta de entrada para os arquivos TypeScript. */
+    "outDir": "./dist",                                /* Defina a pasta de saída para os arquivos JavaScript compilados. */
+    
+    /* Interop Constraints */
+    "esModuleInterop": true,                           /* Habilite interoperabilidade com módulos CommonJS. */
+    "forceConsistentCasingInFileNames": true,          /* Assegure consistência na capitalização dos arquivos. */
+
+    /* Type Checking */
+    "strict": true,                                    /* Habilite todas as opções de checagem de tipos estrita. */
+
+    /* Completeness */
+    "skipLibCheck": true                               /* Pule a verificação de bibliotecas de arquivos de declaração (.d.ts). */
+  }
+}
