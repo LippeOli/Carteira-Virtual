@@ -1,5 +1,7 @@
 import * as readline from 'readline';
 
+import pool from './database';
+
 // Configurar readline para pegar inputs do terminal
 const rl = readline.createInterface({
     input: process.stdin,
@@ -16,23 +18,42 @@ class Despesa {
         this.valor = valor;
     }
 
-      // Método que retorna uma saudação
-      saldo(): string {
-        return `Olá, sua despesa é do tipo: ${this.tipo} no valor de ${this.valor} $.`;
-      }
+    async salvar() {
+        try {
+            const query = `INSERT INTO despesas (tipo, valor) VALUES ($1, $2)`
+            const valores = [this.tipo, this.valor];
+            await pool.query(query, valores);
+            console.log('Despesa salva no banco de dados!');
+       
+        } catch (err) {
+            console.error('Erro ao salvar a despesa:', err);
+       
+        }
+    }
 };
 
-// Função para pegar os inputs e criar a despesa
-function criarDespesa() {
-    rl.question("Qual tipo de despesa: ", (tipo) =>{
-        rl.question('Digite o valor da despesa: ', (valor) => {
-            const despesa1 = new Despesa(tipo, parseFloat(valor));
-            console.log(despesa1.saldo());
-            rl.close();
-        })
 
-    })
 
+// Função para criar a tabela no banco de dados
+async function criarTabela() {
+    const query = `
+        CREATE TABLE IF NOT EXISTS despesas (
+            id SERIAL PRIMARY KEY,
+            tipo VARCHAR(50),
+            valor NUMERIC
+        )
+    `;
+
+    await pool.query(query);
 }
 
-criarDespesa();
+
+
+// Cria a tabela e salva uma despesa de exemplo
+async function main() {
+    await criarTabela();
+    const despesa = new Despesa('Mercado', 42);
+    await despesa.salvar();
+}
+
+main();
