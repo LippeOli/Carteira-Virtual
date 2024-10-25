@@ -1,5 +1,11 @@
 {
   "devDependencies": {
-    "@types/node": "^22.7.8"
+    "@types/node": "^22.7.8",
+    "concurrently": "^9.0.1"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run frontend\"",
+    "server": "cd backend && npm run build && node dist/server.js",
+    "frontend": "cd frontend && npm start"
   }
 }
