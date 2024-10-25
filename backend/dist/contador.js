@@ -79,9 +79,9 @@ function criarTabela() {
 // Cria a tabela e salva uma despesa de exemplo
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield criarTabela();
-        const despesa = new Despesa('Mercado', 42);
+        const despesa = new Despesa('Mercado', 22);
         yield despesa.salvar();
     });
 }
 main();
+exports.default = main();
