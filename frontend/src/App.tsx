@@ -1,9 +1,12 @@
-import {Charts} from './components/Charts';
+import { ChartPrimeiro } from "./components/ChartPrimeiro";
 
-export function App() {
-
+function App() {
   return (
-    <Charts />
-  )
+    <div>
+      <h1 className='text-purple-500'>Olaaa</h1>
+      <ChartPrimeiro></ChartPrimeiro>
+    </div>
+  );
 }
 
+export default App;
