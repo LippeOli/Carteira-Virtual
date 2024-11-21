@@ -23,9 +23,9 @@ Este é um projeto Node.js com TypeScript para o back-end e React para o front-e
 
 Inicia tanto o front-end quanto o back-end simultaneamente, no diretório raiz:
 
-    ```bash
-    npm start
-    ```
+   ```bash
+   npm start
+ ``` 
 
 Compila e executa apenas o back-end.
   
