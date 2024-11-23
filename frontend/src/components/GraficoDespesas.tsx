@@ -1,69 +1,65 @@
 "use client"
 
-import * as React from "react"
+import { useState, useEffect, useMemo } from "react"
 import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
 
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  Card,CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
 } from "@/components/ui/card"
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
+  ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart"
 
-export const description = "A donut chart with text"
-
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 287, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 190, fill: "var(--color-other)" },
-]
-
+// Configuração do gráfico
 const chartConfig = {
   visitors: {
     label: "Visitors",
   },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
 } satisfies ChartConfig
 
-export function ChartPrimeiro() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
+export function GraficoDespesas() {
+  const [chartData, setChartData] = useState([
+    {visitors: 0}
+  ]) // Mantém chartData, mas permite atualização dinâmica
+
+  // Função para buscar dados da API e mapear para o formato necessário
+  useEffect(() => {
+    async function fetchDespesas() {
+      try {
+        const response = await fetch("http://localhost:3333/despesas/soma-por-tipo") // Substitua pela URL da API
+        const data = await response.json()
+
+        // Mapear dados da API para o formato esperado
+        const updatedData = data.map((despesa: { tipo: string; total: string }) => {
+          const colorMapping: Record<string, string> = {
+            Mercado: "lightblue",
+            bandeco: "lightgreen",
+            saida: "purple",
+            mercado: "lightpink",
+          }
+
+          return {
+            browser: despesa.tipo,
+            visitors: parseFloat(despesa.total),
+            fill: colorMapping[despesa.tipo] || "var(--color-other)",
+          }
+        })
+
+        setChartData(updatedData) // Atualiza o estado com os dados da API
+      } catch (error) {
+        console.error("Erro ao buscar despesas:", error)
+      }
+    }
+
+    fetchDespesas()
   }, [])
 
+  
   return (
-    <Card className=" w-80 h-96 flex flex-col">
+    <Card className="w-80 h-96 flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
+        <CardTitle>Despesas - Mensais</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
@@ -77,7 +73,7 @@ export function ChartPrimeiro() {
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={chartData}
+              data={chartData} 
               dataKey="visitors"
               nameKey="browser"
               innerRadius={60}
@@ -86,6 +82,12 @@ export function ChartPrimeiro() {
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+
+                    // Evita NaN enquanto os dados da API não estão carregados
+                    const totalDespesas = chartData.length
+                    ? chartData.reduce((acc, curr) => acc + (Number(curr.visitors) || 0), 0)
+                    : 0;
+
                     return (
                       <text
                         x={viewBox.cx}
@@ -98,14 +100,14 @@ export function ChartPrimeiro() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalDespesas.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Visitors
+                          $$ Reais
                         </tspan>
                       </text>
                     )

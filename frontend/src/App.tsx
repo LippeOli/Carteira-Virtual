@@ -1,5 +1,6 @@
-import { ChartPrimeiro } from "./components/ChartPrimeiro";
-import Despesas from './components/Despesas';
+import { GraficoDespesas } from "./components/GraficoDespesas";
+import CriarDespesa from './components/CriarDespesa';
+import Despesa from "./components/Despesa";
 
 function App() {
 
@@ -7,9 +8,11 @@ function App() {
     <div className="flex flex-col">
       <h1 className='text-purple-500'>Olaaa</h1>
       <br />
-      <Despesas />
+      <CriarDespesa />
       <div className="flex justify-center mt-16">
-        <ChartPrimeiro />
+        <GraficoDespesas />
+        
+        <Despesa />
       </div>
     </div>
   );
