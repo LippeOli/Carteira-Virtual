@@ -6,7 +6,6 @@ function App() {
 
   return (
     <div className="flex flex-col">
-      <h1 className='text-purple-500'>Olaaa</h1>
       <br />
       <CriarDespesa />
       <div className="flex justify-center mt-16">
