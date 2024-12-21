@@ -52,7 +52,7 @@ function Despesas() {
       <form onSubmit={handleSubmit}>
         <label>
           Selecione uma opção:
-          <select value={selection} onChange={(e) => setSelection(e.target.value)}>
+          <select value={selection} onChange={(e) => setSelection(e.target.value)} className='text-slate-800'>
             <option value="">Escolha uma opção</option>
             <option value="mercado">Mercado</option>
             <option value="bandeco">Bandeco</option>
