@@ -1,6 +1,6 @@
-import { GraficoDespesas } from "./components/GraficoDespesas";
+import { GrafDesp } from "./components/Despesas/grafDesp";
 import CriarDesp from './components/Despesas/criarDesp';
-import Despesa from "./components/Despesa";
+import Despesa from "./components/Despesas/despesa";
 
 function App() {
 

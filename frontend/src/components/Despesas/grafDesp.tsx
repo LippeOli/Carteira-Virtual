@@ -18,7 +18,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function GraficoDespesas() {
+export function GrafDesp() {
   const [chartData, setChartData] = useState([
     {visitors: 0}
   ]) // Mantém chartData, mas permite atualização dinâmica
