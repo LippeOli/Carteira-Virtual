@@ -25,6 +25,11 @@ function App() {
         </div>
       </div>
 
+      <div className="bg-slate-950  h-64 w-9/12 rounded-xl border-2 border-slate-600">
+        <GrafDesp/>
+
+      </div>
+
     </div>
   );
 }
