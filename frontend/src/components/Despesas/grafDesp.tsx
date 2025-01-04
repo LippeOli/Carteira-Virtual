@@ -57,7 +57,7 @@ export function GrafDesp() {
 
   
   return (
-    <Card className="w-80 h-96 flex flex-col">
+    <Card className="w-80 h-96 flex flex-col bg-slate-900 border-slate-600">
       <CardHeader className="items-center pb-0">
         <CardTitle>Despesas - Mensais</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
@@ -98,14 +98,14 @@ export function GrafDesp() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className="fill-slate-300 text-3xl font-bold  "
                         >
                           {totalDespesas.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className="fill-slate-300 text-sm"
                         >
                           $$ Reais
                         </tspan>

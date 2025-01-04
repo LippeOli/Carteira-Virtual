@@ -9,7 +9,7 @@ interface Despesa {
 // Tipagem para o estado das despesas agrupadas
 type DespesasAgrupadas = Record<string, number>;
 
-const Despesa: React.FC = () => {
+const Legenda: React.FC = () => {
   const [despesas, setDespesas] = useState<Despesa[]>([]); // Estado para armazenar as despesas
   const [despesasPorTipo, setDespesasPorTipo] = useState<DespesasAgrupadas>({}); // Estado para despesas agrupadas por tipo
 
@@ -66,4 +66,4 @@ const Despesa: React.FC = () => {
   );
 };
 
-export default Despesa;
+export default Legenda;

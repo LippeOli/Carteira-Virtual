@@ -1,6 +1,6 @@
 import { GrafDesp } from "./components/Despesas/grafDesp";
 import CriarDesp from './components/Despesas/criarDesp';
-import Despesa from "./components/Despesas/despesa";
+import Legenda from "./components/Despesas/legendaDesp";
 
 function App() {
 
@@ -25,9 +25,11 @@ function App() {
         </div>
       </div>
 
-      <div className="bg-slate-950  h-64 w-9/12 rounded-xl border-2 border-slate-600">
-        <GrafDesp/>
-
+      <div className=" bg-slate-950 w-9/12 mt-12 rounded-xl border-2 border-slate-600">
+        <div className="mt-8 ml-4 mb-4 flex gap-8">
+          <GrafDesp/>
+          <Legenda/>
+        </div>
       </div>
 
     </div>
