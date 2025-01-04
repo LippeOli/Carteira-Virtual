@@ -25,9 +25,11 @@ function App() {
         </div>
       </div>
 
-      <div className="bg-slate-950  h-64 w-9/12 rounded-xl border-2 border-slate-600">
-        <GrafDesp/>
-
+      <div className=" bg-slate-950 w-9/12 mt-12 rounded-xl border-2 border-slate-600">
+        <div className="mt-8 ml-4 mb-4 flex gap-8">
+          <GrafDesp/>
+          <Despesa/>
+        </div>
       </div>
 
     </div>
