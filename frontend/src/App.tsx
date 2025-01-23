@@ -1,6 +1,6 @@
-import { GrafDesp } from "./components/Despesas/grafDesp";
-import CriarDesp from './components/Despesas/criarDesp';
-import Legenda from "./components/Despesas/legendaDesp";
+import { GrafDesp } from "./components/despesas/grafDesp";
+import CriarDesp from './components/despesas/criarDesp';
+import Legenda from "./components/despesas/legendaDesp";
 
 function App() {
 
