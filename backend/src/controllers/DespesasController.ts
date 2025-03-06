@@ -17,6 +17,17 @@ class DespesasController {
         }
     }
 
+    // Método para listar todas as despesas
+    static async listarDespesas(req: Request, res: Response): Promise<void> {
+        try {
+            const despesas = await Despesas.buscarDespesas();
+            res.json(despesas);
+        } catch (error) {
+            console.error("Erro ao listar despesas:", error);
+            res.status(500).json({ message: "Erro ao listar despesas" });
+        }
+    }
+
     // Método para somar os valores por tipo
     static async somarPorTipo(req: Request, res: Response): Promise<void> {
         try {
@@ -27,6 +38,19 @@ class DespesasController {
             res.status(500).json({ message: 'Erro ao obter a soma por tipo' });
         }
     }
+
+    // Método para deletar despesa
+    static async deletar(req: Request, res: Response) {
+        const { id } = req.params; // Pegando o ID da despesa da URL
+        try {
+            await Despesas.deletar(Number(id)); // Garantir que o 'id' é um número
+            res.status(200).json({ message: 'Despesa deletada com sucesso!' });
+        } catch (error) {
+            console.error('Erro ao deletar despesa:', error);
+            res.status(500).json({ message: 'Erro ao deletar a despesa' });
+        }
+    }
+
 }
 
 export default DespesasController;

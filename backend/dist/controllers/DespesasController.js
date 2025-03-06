@@ -27,6 +27,19 @@ class DespesasController {
             }
         });
     }
+    // Método para listar todas as despesas
+    static listarDespesas(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const despesas = yield Despesas_1.Despesas.buscarDespesas();
+                res.json(despesas);
+            }
+            catch (error) {
+                console.error("Erro ao listar despesas:", error);
+                res.status(500).json({ message: "Erro ao listar despesas" });
+            }
+        });
+    }
     // Método para somar os valores por tipo
     static somarPorTipo(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -37,6 +50,20 @@ class DespesasController {
             catch (error) {
                 console.error('Erro ao obter a soma por tipo:', error);
                 res.status(500).json({ message: 'Erro ao obter a soma por tipo' });
+            }
+        });
+    }
+    // Método para deletar despesa
+    static deletar(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = req.params; // Pegando o ID da despesa da URL
+            try {
+                yield Despesas_1.Despesas.deletar(Number(id)); // Garantir que o 'id' é um número
+                res.status(200).json({ message: 'Despesa deletada com sucesso!' });
+            }
+            catch (error) {
+                console.error('Erro ao deletar despesa:', error);
+                res.status(500).json({ message: 'Erro ao deletar a despesa' });
             }
         });
     }

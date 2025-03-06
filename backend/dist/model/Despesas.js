@@ -34,6 +34,32 @@ class Despesas {
             }
         });
     }
+    static buscarDespesas() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const query = `SELECT id, tipo, valor FROM despesas ORDER BY id ASC`;
+                const result = yield database_1.default.query(query);
+                return result.rows;
+            }
+            catch (err) {
+                console.error("Erro ao buscar todas as despesas:", err);
+                throw err;
+            }
+        });
+    }
+    static deletar(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const query = `DELETE FROM despesas WHERE id = $1`;
+                yield database_1.default.query(query, [id]);
+                console.log(`Despesa com ID ${id} deletada!`);
+            }
+            catch (err) {
+                console.error('Erro ao deletar a despesa:', err);
+                throw err;
+            }
+        });
+    }
 }
 exports.Despesas = Despesas;
 // Função para criar a tabela no banco de dados

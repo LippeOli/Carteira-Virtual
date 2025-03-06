@@ -1,15 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { TrendingUp } from "lucide-react"
+import { TrendingUp, RefreshCw } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
 
 import {
-  Card,CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
+  Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
 } from "@/components/ui/card"
 import {
   ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart"
+import { Button } from "@/components/ui/button"
 
 // Configuração do gráfico
 const chartConfig = {
@@ -18,44 +19,73 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function GrafDesp() {
+// Adicionamos uma propriedade opcional para receber a referência da função
+interface GrafDespProps {
+  onInitialize?: (recarregarFn: () => Promise<void>) => void;
+}
+
+// Adicionamos uma propriedade opcional para receber a referência da função
+interface GrafDespProps {
+  onInitialize?: (recarregarFn: () => Promise<void>) => void;
+}
+
+export function GrafDesp({ onInitialize }: GrafDespProps) {
   const [chartData, setChartData] = useState([
-    {visitors: 0}
-  ]) // Mantém chartData, mas permite atualização dinâmica
+    { visitors: 0 }
+  ])
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Função para buscar dados da API e mapear para o formato necessário
-  useEffect(() => {
-    async function fetchDespesas() {
-      try {
-        const response = await fetch("http://localhost:3333/despesas/soma-por-tipo") // Substitua pela URL da API
-        const data = await response.json()
+  // Função para buscar dados da API extraída para fora do useEffect
+  const fetchDespesas = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch("http://localhost:3333/despesas/soma")
+      const data = await response.json()
 
-        // Mapear dados da API para o formato esperado
-        const updatedData = data.map((despesa: { tipo: string; total: string }) => {
-          const colorMapping: Record<string, string> = {
-            Mercado: "lightblue",
-            bandeco: "lightgreen",
-            saida: "purple",
-            mercado: "lightpink",
-          }
+      // Mapear dados da API para o formato esperado
+      const updatedData = data.map((despesa: { tipo: string; total: string }) => {
+        const colorMapping: Record<string, string> = {
+          comida: "lightblue",
+          milho: "lightgreen",
+          bebida: "purple",
+          transporte: "lightpink",
+        }
 
-          return {
-            browser: despesa.tipo,
-            visitors: parseFloat(despesa.total),
-            fill: colorMapping[despesa.tipo] || "var(--color-other)",
-          }
-        })
+        return {
+          browser: despesa.tipo,
+          visitors: parseFloat(despesa.total),
+          fill: colorMapping[despesa.tipo] || "var(--color-other)",
+        }
+      })
 
-        setChartData(updatedData) // Atualiza o estado com os dados da API
-      } catch (error) {
-        console.error("Erro ao buscar despesas:", error)
-      }
+      setChartData(updatedData)
+    } catch (error) {
+      console.error("Erro ao buscar despesas:", error)
+    } finally {
+      setIsLoading(false)
     }
+  }
 
+  // Função explícita para recarregar o gráfico que pode ser chamada de qualquer lugar
+  const recarregarGrafico = () => {
     fetchDespesas()
-  }, [])
+  }
 
-  
+  // Efeito para carregar os dados inicialmente e expor a função de recarga
+  useEffect(() => {
+    fetchDespesas()
+    
+    // Se a prop onInitialize for fornecida, passamos a função recarregarGrafico
+    if (onInitialize) {
+      onInitialize(fetchDespesas)
+    }
+  }, [onInitialize])
+
+  // Calcular o total das despesas
+  const totalDespesas = chartData.length
+    ? chartData.reduce((acc, curr) => acc + (Number(curr.visitors) || 0), 0)
+    : 0;
+
   return (
     <Card className="w-80 h-96 flex flex-col bg-slate-900 border-slate-600">
       <CardHeader className="items-center pb-0">
@@ -82,12 +112,6 @@ export function GrafDesp() {
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-
-                    // Evita NaN enquanto os dados da API não estão carregados
-                    const totalDespesas = chartData.length
-                    ? chartData.reduce((acc, curr) => acc + (Number(curr.visitors) || 0), 0)
-                    : 0;
-
                     return (
                       <text
                         x={viewBox.cx}
@@ -98,9 +122,9 @@ export function GrafDesp() {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-slate-300 text-3xl font-bold  "
+                          className="fill-slate-300 text-3xl font-bold"
                         >
-                          {totalDespesas.toLocaleString()}
+                          {isLoading ? '...' : totalDespesas.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}

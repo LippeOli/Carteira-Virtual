@@ -25,6 +25,31 @@ export class Despesas {
        
         }
     }
+
+    static async buscarDespesas(): Promise<{ id: number; tipo: string; valor: number }[]> {
+        try {
+            const query = `SELECT id, tipo, valor FROM despesas ORDER BY id ASC`;
+            const result = await pool.query(query); 
+            return result.rows;
+        } catch (err) {
+            console.error("Erro ao buscar todas as despesas:", err);
+            throw err;
+        }
+    }
+
+    static async deletar(id: number) {
+            try {
+                const query = `DELETE FROM despesas WHERE id = $1`;
+                await pool.query(query, [id]); 
+                console.log(`Despesa com ID ${id} deletada!`);
+            } catch (err) {
+                console.error('Erro ao deletar a despesa:', err);
+                throw err;
+            }
+        
+    }
+    
+
 }
     
     // Função para criar a tabela no banco de dados
@@ -41,6 +66,7 @@ export class Despesas {
     }
 
 
+    
     //Soma por tipos 
     export async function somarPorTipo() {
         try {
@@ -57,3 +83,5 @@ export class Despesas {
             throw err; // Caso ocorra algum erro, ele é propagado para o chamador
         }
     }
+
+    

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Button } from '../ui/button';
 
+interface CriarDespProps {
+  onSubmitSuccess?: () => void;
+}
 
-function Despesas() {
+function CriarDesp({ onSubmitSuccess }: CriarDespProps) {
   const [selection, setSelection] = useState<string>('');
   const [value, setValue] = useState<string>('');
   
@@ -28,7 +31,11 @@ function Despesas() {
       if (response.ok) {
         const result = await response.json();
         console.log('Sucesso:', result);
-        alert('Dados enviados com sucesso!');
+        
+        // Chamar a função para recarregar o gráfico se ela existir
+        if (onSubmitSuccess) {
+          onSubmitSuccess();
+        }
       } else {
         console.error('Erro:', response.statusText);
         alert('Falha ao enviar os dados');
@@ -38,7 +45,6 @@ function Despesas() {
       alert('Erro na conexão com a API');
     }
 
-
     // Após a resposta ser tratada, redefina os valores dos inputs
     setSelection('');
     setValue('');
@@ -46,17 +52,17 @@ function Despesas() {
 
 
   return (
-
     <div>
       <h2>Despesas</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Selecione uma opção:
-          <select value={selection} onChange={(e) => setSelection(e.target.value)} className='text-slate-800'>
+          <select value={selection} onChange={(e) => setSelection(e.target.value)} className='text-slate-800 mb-2'>
             <option value="">Escolha uma opção</option>
-            <option value="mercado">Mercado</option>
-            <option value="bandeco">Bandeco</option>
-            <option value="saida">Saida</option>
+            <option value="comida">Comida</option>
+            <option value="milho">Milho</option>
+            <option value="bebida">Bebida</option>
+            <option value="transporte">Transporte</option>
           </select>
         </label>
         <br />
@@ -66,14 +72,19 @@ function Despesas() {
             type="text"
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            className='bg-slate-800 ml-4 rounded-md'
           />
         </label>
         <br />
-        <Button type='submit'>Enviar</Button>
-        </form>
+        <Button 
+          type='submit'
+          className='bg-slate-800 rounded-md'
+        >
+          Enviar
+        </Button>
+      </form>
     </div>
-
   );
 }
 
-export default Despesas;
+export default CriarDesp;

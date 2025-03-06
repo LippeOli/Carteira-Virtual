@@ -8,5 +8,7 @@ const DespesasController_1 = __importDefault(require("./controllers/DespesasCont
 const routes = (0, express_1.Router)();
 // Definindo as rotas para o controlador de despesas
 routes.post('/despesas', DespesasController_1.default.salvar);
-routes.get('/despesas/soma-por-tipo', DespesasController_1.default.somarPorTipo);
+routes.get('/despesas/soma', DespesasController_1.default.somarPorTipo);
+routes.get('/despesas/', DespesasController_1.default.listarDespesas);
+routes.delete('/despesas/:id', DespesasController_1.default.deletar);
 exports.default = routes;
