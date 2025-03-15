@@ -1,14 +1,25 @@
 import { Request, Response } from 'express';
-import { Despesas } from '../model/Despesas'; // Importa o modelo de Despesa
+import { Despesas } from '../model/Despesas'; // Importa o modelo de Despesas
 import { somarPorTipo } from '../model/Despesas'; // Função para somar por tipo
 
 class DespesasController {
     // Método para salvar uma despesa
     static async salvar(req: Request, res: Response): Promise<void> {
-        const { tipo, valor } = req.body;
+        const { tipo, valor, descricao, data } = req.body;
+
+        if (!tipo || !valor || !descricao || !data) {
+            res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+            return;
+        }
 
         try {
-            const despesas = new Despesas(tipo, valor);
+            const dataConvertida = new Date(data);
+            if (isNaN(dataConvertida.getTime())) {
+                res.status(400).json({ message: 'Data inválida' });
+                return;
+            }
+
+            const despesas = new Despesas(tipo, valor, descricao, dataConvertida);
             await despesas.salvar();
             res.status(201).json({ message: 'Despesa salva com sucesso!' });
         } catch (error) {
@@ -41,16 +52,21 @@ class DespesasController {
 
     // Método para deletar despesa
     static async deletar(req: Request, res: Response) {
-        const { id } = req.params; // Pegando o ID da despesa da URL
+        const { id } = req.params;
+
+        if (!id || isNaN(Number(id))) {
+            res.status(400).json({ message: 'ID inválido' });
+            return;
+        }
+
         try {
-            await Despesas.deletar(Number(id)); // Garantir que o 'id' é um número
+            await Despesas.deletar(Number(id));
             res.status(200).json({ message: 'Despesa deletada com sucesso!' });
         } catch (error) {
             console.error('Erro ao deletar despesa:', error);
             res.status(500).json({ message: 'Erro ao deletar a despesa' });
         }
     }
-
 }
 
 export default DespesasController;

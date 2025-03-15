@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 
 // Tipagem para os dados individuais de despesa
 interface Despesa {
-  id: number;  
+  id: number;
   tipo: string;
-  valor: string; // String porque o total vem como string no JSON da API
+  valor: string;  
+  descricao?: string;
+  data?: string;
 }
 
 const Legenda: React.FC = () => {
@@ -48,12 +50,25 @@ const Legenda: React.FC = () => {
       <h1>Lista de Despesas</h1>
       <ul>
         {despesas.map((despesa, index) => (
-          <li key={index} className='text-sm mt-2'>
-            {despesa.tipo} -------- {despesa.valor}
-            <button onClick={() => 
+          <li key={index} className='flex text-sm mt-2'>
+           <div className='flex-col'>
+              {despesa.tipo} -------- {despesa.valor}
+              <div className='flex'>
+                {despesa.descricao && <p className="text-xs text-gray-400">{despesa.descricao}</p>}
+                {despesa.data && (
+                  <p className="ml-6 text-xs text-gray-400">
+                    dia: {new Date(despesa.data).getDate()} {/* Exibe apenas o dia */}
+                  </p>
+                )}
+
+              </div>           
+            </div>
+            <button 
+              onClick={() => 
               handleDelete(despesa.id)}
-              className='ml-3'
-              >⋮</button>
+              className='ml-6 '
+              >✖
+            </button>
           </li>
         ))}
       </ul>

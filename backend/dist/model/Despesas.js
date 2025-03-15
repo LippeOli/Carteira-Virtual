@@ -13,19 +13,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Despesas = void 0;
+exports.criarTabela = criarTabela;
 exports.somarPorTipo = somarPorTipo;
 const database_1 = __importDefault(require("../database"));
-//Modelo de Despesas
+// Modelo de Despesas
 class Despesas {
-    constructor(tipo, valor) {
+    constructor(tipo, valor, descricao, data) {
         this.tipo = tipo;
         this.valor = valor;
+        this.descricao = descricao;
+        this.data = data;
     }
     salvar() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const query = `INSERT INTO despesas (tipo, valor) VALUES ($1, $2)`;
-                const valores = [this.tipo, this.valor];
+                const query = `INSERT INTO despesas (tipo, valor, descricao, data) VALUES ($1, $2, $3, $4)`;
+                const valores = [this.tipo, this.valor, this.descricao, this.data];
                 yield database_1.default.query(query, valores);
                 console.log('Despesa salva no banco de dados!');
             }
@@ -37,7 +40,7 @@ class Despesas {
     static buscarDespesas() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const query = `SELECT id, tipo, valor FROM despesas ORDER BY id ASC`;
+                const query = `SELECT id, tipo, valor, descricao, data FROM despesas ORDER BY id ASC`;
                 const result = yield database_1.default.query(query);
                 return result.rows;
             }
@@ -66,28 +69,30 @@ exports.Despesas = Despesas;
 function criarTabela() {
     return __awaiter(this, void 0, void 0, function* () {
         const query = `
-            CREATE TABLE IF NOT EXISTS despesas (
-                id SERIAL PRIMARY KEY,
-                tipo VARCHAR(50),
-                valor NUMERIC
-            )
-        `;
+        CREATE TABLE IF NOT EXISTS despesas (
+            id SERIAL PRIMARY KEY,
+            tipo VARCHAR(50) NOT NULL,
+            valor NUMERIC NOT NULL,
+            descricao TEXT NOT NULL,
+            data DATE NOT NULL
+        )
+    `;
         yield database_1.default.query(query);
     });
 }
-//Soma por tipos 
+// Soma por tipos
 function somarPorTipo() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const query = `
-                SELECT tipo, SUM(valor) AS total FROM despesas GROUP BY tipo
-            `;
-            const result = yield database_1.default.query(query); // Executa a consulta no banco
-            return result.rows; // Retorna as linhas resultantes
+            SELECT tipo, SUM(valor) AS total FROM despesas GROUP BY tipo
+        `;
+            const result = yield database_1.default.query(query);
+            return result.rows;
         }
         catch (err) {
             console.error('Erro ao consultar o banco de dados:', err);
-            throw err; // Caso ocorra algum erro, ele é propagado para o chamador
+            throw err;
         }
     });
 }
