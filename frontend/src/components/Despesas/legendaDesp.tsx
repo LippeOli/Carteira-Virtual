@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
-// Tipagem para os dados individuais de despesa
 interface Despesa {
   id: number;
   tipo: string;
@@ -9,24 +8,43 @@ interface Despesa {
   data?: string;
 }
 
-const Legenda: React.FC = () => {
-  const [despesas, setDespesas] = useState<Despesa[]>([]); // Estado para armazenar as despesas
+interface LegendaProps {
+  onInitialize?: (recarregarFn: () => Promise<void>) => void;
+  onDeleteSuccess?: () => void; // Nova prop para notificar sobre remoção bem-sucedida
+}
+
+const Legenda: React.FC<LegendaProps> = ({ onInitialize, onDeleteSuccess }) => {
+  const [despesas, setDespesas] = useState<Despesa[]>([]); 
+
+  // Função para buscar dados da API
+  const fetchDespesas = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:3333/despesas/');
+      const data: Despesa[] = await response.json();
+      setDespesas(data);
+      return data;
+    } catch (error) {
+      console.error('Erro ao buscar despesas:', error);
+      return [];
+    }
+  }, []);
+
+  // Função adaptadora que retorna Promise<void>
+  const recarregarDespesas = useCallback(async () => {
+    await fetchDespesas();
+    // Não retorna nenhum valor, então é Promise<void>
+  }, [fetchDespesas]);
 
   useEffect(() => {
-    // Função para buscar dados da API
-    async function fetchDespesas() {
-      try {
-        const response = await fetch('http://localhost:3333/despesas/'); // Substitua pela URL da sua API
-        const data: Despesa[] = await response.json(); // Tipando os dados como array de Despesa
-
-        setDespesas(data); // Armazena os dados no estado
-      } catch (error) {
-        console.error('Erro ao buscar despesas:', error);
-      }
-    }
-
+    // Inicializa os dados
     fetchDespesas();
-  }, []);
+    
+    // Se onInitialize for fornecido, passa a função de recarga adaptada
+    if (onInitialize) {
+      onInitialize(recarregarDespesas);
+    }
+  }, [fetchDespesas, onInitialize, recarregarDespesas]);
+  
 
   const handleDelete = async (id: number) => {
     try {
@@ -36,13 +54,17 @@ const Legenda: React.FC = () => {
       if (response.ok) {
         // Atualiza a lista de despesas após a exclusão
         setDespesas((prevDespesas) => prevDespesas.filter((despesa) => despesa.id !== id));
+        
+        // Notifica o componente pai sobre a exclusão bem-sucedida
+        if (onDeleteSuccess) {
+          onDeleteSuccess();
+        }
       } else {
         console.error('Erro ao deletar despesa:', await response.json());
       }
     } catch (error) {
         console.error('Erro ao deletar despesa:', error);
     }
-
   }; 
 
   return (
@@ -57,15 +79,13 @@ const Legenda: React.FC = () => {
                 {despesa.descricao && <p className="text-xs text-gray-400">{despesa.descricao}</p>}
                 {despesa.data && (
                   <p className="ml-6 text-xs text-gray-400">
-                    dia: {new Date(despesa.data).getDate()} {/* Exibe apenas o dia */}
+                    dia: {new Date(despesa.data).getDate()}
                   </p>
                 )}
-
               </div>           
             </div>
             <button 
-              onClick={() => 
-              handleDelete(despesa.id)}
+              onClick={() => handleDelete(despesa.id)}
               className='ml-6 '
               >✖
             </button>
