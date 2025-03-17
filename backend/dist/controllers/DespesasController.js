@@ -21,12 +21,14 @@ class DespesasController {
                 return;
             }
             try {
-                const dataConvertida = new Date(data);
-                if (isNaN(dataConvertida.getTime())) {
+                // Criamos a data com horário meio-dia para evitar problemas de fuso horário
+                const [year, month, day] = data.split('-').map(Number);
+                const dataAjustada = new Date(year, month - 1, day, 12, 0, 0);
+                if (isNaN(dataAjustada.getTime())) {
                     res.status(400).json({ message: 'Data inválida' });
                     return;
                 }
-                const despesas = new Despesas_1.Despesas(tipo, valor, descricao, dataConvertida);
+                const despesas = new Despesas_1.Despesas(tipo, valor, descricao, dataAjustada);
                 yield despesas.salvar();
                 res.status(201).json({ message: 'Despesa salva com sucesso!' });
             }

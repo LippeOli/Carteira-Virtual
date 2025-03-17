@@ -6,27 +6,30 @@ class DespesasController {
     // Método para salvar uma despesa
     static async salvar(req: Request, res: Response): Promise<void> {
         const { tipo, valor, descricao, data } = req.body;
-
+      
         if (!tipo || !valor || !descricao || !data) {
-            res.status(400).json({ message: 'Todos os campos são obrigatórios' });
-            return;
+          res.status(400).json({ message: 'Todos os campos são obrigatórios' });
+          return;
         }
-
+      
         try {
-            const dataConvertida = new Date(data);
-            if (isNaN(dataConvertida.getTime())) {
-                res.status(400).json({ message: 'Data inválida' });
-                return;
-            }
-
-            const despesas = new Despesas(tipo, valor, descricao, dataConvertida);
-            await despesas.salvar();
-            res.status(201).json({ message: 'Despesa salva com sucesso!' });
+          // Criamos a data com horário meio-dia para evitar problemas de fuso horário
+          const [year, month, day] = data.split('-').map(Number);
+          const dataAjustada = new Date(year, month - 1, day, 12, 0, 0);
+          
+          if (isNaN(dataAjustada.getTime())) {
+            res.status(400).json({ message: 'Data inválida' });
+            return;
+          }
+      
+          const despesas = new Despesas(tipo, valor, descricao, dataAjustada);
+          await despesas.salvar();
+          res.status(201).json({ message: 'Despesa salva com sucesso!' });
         } catch (error) {
-            console.error('Erro ao salvar despesa:', error);
-            res.status(500).json({ message: 'Erro ao salvar a despesa' });
+          console.error('Erro ao salvar despesa:', error);
+          res.status(500).json({ message: 'Erro ao salvar a despesa' });
         }
-    }
+      }
 
     // Método para listar todas as despesas
     static async listarDespesas(req: Request, res: Response): Promise<void> {

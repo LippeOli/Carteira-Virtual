@@ -10,7 +10,6 @@ import {
 import {
   ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,
 } from "@/components/ui/chart"
-import { Button } from "@/components/ui/button"
 
 // Configuração do gráfico
 const chartConfig = {
@@ -45,10 +44,10 @@ export function GrafDesp({ onInitialize }: GrafDespProps) {
       // Mapear dados da API para o formato esperado
       const updatedData = data.map((despesa: { tipo: string; total: string }) => {
         const colorMapping: Record<string, string> = {
-          comida: "lightblue",
-          milho: "lightgreen",
-          bebida: "purple",
-          transporte: "lightpink",
+          transporte: "lightblue",
+          mercado: "lightgreen",
+          lazer: "purple",
+          util: "lightpink",
         }
 
         return {

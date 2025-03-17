@@ -19,9 +19,9 @@ function CriarDesp({ onSubmitSuccess }: CriarDespProps) {
       tipo: selection,
       valor: parseFloat(value),
       descricao: descricao,
-      data: new Date(data).toISOString(), // Convertendo para formato ISO
+      data: data, 
     };
-
+    
     try {
       // Faz o Request da API
       const response = await fetch('http://localhost:3333/despesas', {
@@ -63,10 +63,10 @@ function CriarDesp({ onSubmitSuccess }: CriarDespProps) {
           Selecione uma opção:
           <select value={selection} onChange={(e) => setSelection(e.target.value)} className='text-slate-800 mb-2'>
             <option value="">Escolha uma opção</option>
-            <option value="comida">Comida</option>
-            <option value="milho">Milho</option>
-            <option value="bebida">Bebida</option>
             <option value="transporte">Transporte</option>
+            <option value="mercado">Mercado</option>
+            <option value="lazer">Lazer</option>
+            <option value="util">Utilidades</option>
           </select>
         </label>
         <br />
